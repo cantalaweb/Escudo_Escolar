@@ -1,10 +1,11 @@
 [project]
-name = "2025-12-14-escudo-escolar"
+name = "escudo-escolar"
 version = "0.1.0"
-description = "Add your description here"
+description = "Sistema de detección temprana de bullying escolar con IA"
 readme = "README.md"
-requires-python = ">=3.11.9"
+requires-python = ">=3.11"
 dependencies = [
+    # Data Science & ML (para notebooks y modelo)
     "matplotlib>=3.10.8",
     "numpy>=2.3.5",
     "pandas>=2.3.3",
@@ -20,5 +21,12 @@ dev = [
     "ruff>=0.14.9",
 ]
 
+[tool.uv.workspace]
+members = ["backend"]
+
 [tool.pytest.ini_options]
 pythonpath = "src"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

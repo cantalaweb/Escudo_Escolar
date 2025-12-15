@@ -1,14 +1,31 @@
-# Big files
+# ==============================================================================
+# ARCHIVOS DE ENTORNO Y SECRETS
+# ==============================================================================
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+secrets/
+backend/.env
+
+# ==============================================================================
+# BIG FILES / DATASETS
+# ==============================================================================
 dataset_bullying_profesores.csv
 dataset_bullying_testigos.csv
 dataset_training_bullying_enhanced.csv
+*.csv
+*.parquet
+*.h5
+*.hdf5
 
-# Byte-compiled / optimized / DLL files
+# ==============================================================================
+# PYTHON
+# ==============================================================================
 __pycache__/
 *.py[cod]
-*.class
-
-# C extensions
+*$py.class
 *.so
 
 # Distribution / packaging
@@ -37,9 +54,8 @@ env/
 venv/
 ENV/
 env.bak/
-venv.bak
+venv.bak/
 .venv/
-
 
 # Unit test / coverage reports
 htmlcov/
@@ -54,14 +70,63 @@ coverage.xml
 *.py,cover
 .hypothesis/
 pytest_cache/
+.pytest_cache/
 cover/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+*.ipynb_checkpoints
 
-# python version
+# Python version
 .python-version
 
-# Extras
-.env
-planning
+# ==============================================================================
+# FRONTEND (Next.js / Node.js)
+# ==============================================================================
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# ==============================================================================
+# IDEs Y EDITORES
+# ==============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ==============================================================================
+# LOGS Y BASES DE DATOS LOCALES
+# ==============================================================================
+*.log
+*.sqlite
+*.db
+
+# ==============================================================================
+# MODELO ML Y ARTEFACTOS
+# ==============================================================================
+models/*.pkl
+models/*.joblib
+models/*.h5
+models/*.pt
+models/*.pth
+mlruns/
+wandb/
+
+# ==============================================================================
+# EXTRAS
+# ==============================================================================
+planning/

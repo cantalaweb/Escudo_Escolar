@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv sync:*)",
+      "Bash(uv run python:*)",
+      "Bash(timeout 5 uv run:*)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(uv add:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzY1ODAxNTA2fQ.P43whRysuWKLve8dQyVWv1dRUZyQyBJj_wZc-hJ10w8\")"
+    ]
+  }
+}
