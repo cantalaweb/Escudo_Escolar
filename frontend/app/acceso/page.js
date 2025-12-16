@@ -43,7 +43,7 @@ export default function LoginPage() {
       localStorage.setItem('user', JSON.stringify(data.user));
 
       // Redirect to dashboard
-      router.push('/dashboard');
+      router.push('/panel');
     } catch (err) {
       console.error('Login error:', err);
       setError(err.message || 'Error al iniciar sesión. Verifica tus credenciales.');
@@ -78,11 +78,13 @@ export default function LoginPage() {
         >
           {/* Logo and Title */}
           <Box sx={{ textAlign: 'center', mb: 4 }}>
-            <img
-              src="/escudo_escolar_logo.png"
-              alt="Escudo Escolar"
-              style={{ height: 80, marginBottom: 16 }}
-            />
+            <Link href="/" style={{ display: 'inline-block' }}>
+              <img
+                src="/escudo_escolar_logo.png"
+                alt="Escudo Escolar"
+                style={{ height: 80, marginBottom: 16, cursor: 'pointer' }}
+              />
+            </Link>
             <Typography
               variant="h4"
               component="h1"

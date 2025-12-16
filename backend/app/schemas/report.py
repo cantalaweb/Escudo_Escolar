@@ -9,7 +9,7 @@ from typing import Optional
 
 class WitnessReportCreate(BaseModel):
     """Schema para crear reporte de testigo"""
-    class_id: int = Field(..., gt=0, description="ID de la clase")
+    class_id: Optional[int] = Field(None, gt=0, description="ID de la clase (opcional)")
     event_date: Optional[date] = None
 
 

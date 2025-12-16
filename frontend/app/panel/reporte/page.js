@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   Box,
   Container,
@@ -133,7 +134,7 @@ export default function TeacherReportPage() {
     const userData = localStorage.getItem('user');
 
     if (!token || !userData || userData === 'undefined') {
-      router.push('/login');
+      router.push('/acceso');
       return;
     }
 
@@ -143,7 +144,7 @@ export default function TeacherReportPage() {
 
       // If admin, redirect to dashboard
       if (parsedUser.role === 'admin') {
-        router.push('/dashboard');
+        router.push('/panel');
         return;
       }
 
@@ -152,15 +153,35 @@ export default function TeacherReportPage() {
     } catch (error) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      router.push('/login');
+      router.push('/acceso');
     }
   }, [router]);
 
   const loadClasses = async () => {
     try {
       const data = await api.teacherReports.getCourses();
-      // Ordenar clases alfabéticamente
-      const sortedClasses = data.sort((a, b) => a.name.localeCompare(b.name));
+
+      // Ordenar clases por nivel educativo y luego alfabéticamente
+      const sortedClasses = data.sort((a, b) => {
+        // Determinar el nivel educativo
+        const getLevelOrder = (name) => {
+          if (name.toLowerCase().includes('primaria')) return 1;
+          if (name.toLowerCase().includes('eso')) return 2;
+          if (name.toLowerCase().includes('bachillerato')) return 3;
+          return 4;
+        };
+
+        const levelA = getLevelOrder(a.name);
+        const levelB = getLevelOrder(b.name);
+
+        if (levelA !== levelB) {
+          return levelA - levelB;
+        }
+
+        // Mismo nivel, ordenar alfabéticamente
+        return a.name.localeCompare(b.name);
+      });
+
       setClasses(sortedClasses);
       setLoading(false);
     } catch (err) {
@@ -265,15 +286,26 @@ export default function TeacherReportPage() {
     <Box>
       <AppBar position="static">
         <Toolbar>
-          <img
-            src="/escudo_escolar_logo.png"
-            alt="Escudo Escolar"
-            style={{ height: 40, marginRight: 16 }}
-          />
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+            <img
+              src="/escudo_escolar_logo.png"
+              alt="Escudo Escolar"
+              style={{ height: 40, marginRight: 16, cursor: 'pointer' }}
+            />
+          </Link>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Checklist Diario para Profesores
           </Typography>
-          <Button color="inherit" onClick={handleLogout}>
+          <Button
+            color="inherit"
+            onClick={handleLogout}
+            sx={{
+              bgcolor: 'transparent',
+              '&:hover': {
+                bgcolor: 'rgba(0, 0, 0, 0.15)'
+              }
+            }}
+          >
             Cerrar Sesión
           </Button>
         </Toolbar>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   Box,
   Container,
@@ -26,7 +27,7 @@ export default function DashboardPage() {
       // Clear invalid data
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      router.push('/login');
+      router.push('/acceso');
       return;
     }
 
@@ -35,7 +36,7 @@ export default function DashboardPage() {
 
       // Redirect non-admin teachers to the report form
       if (parsedUser.role !== 'admin') {
-        router.push('/dashboard/teacher-report');
+        router.push('/panel/reporte');
         return;
       }
 
@@ -44,7 +45,7 @@ export default function DashboardPage() {
       // If parsing fails, clear data and redirect
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      router.push('/login');
+      router.push('/acceso');
     }
   }, [router]);
 
@@ -63,13 +64,24 @@ export default function DashboardPage() {
     <Box>
       <AppBar position="static">
         <Toolbar>
-          <img
-            src="/escudo_escolar_logo.png"
-            alt="Escudo Escolar"
-            style={{ height: 40, marginRight: 16 }}
-          />
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+            <img
+              src="/escudo_escolar_logo.png"
+              alt="Escudo Escolar"
+              style={{ height: 40, marginRight: 16, cursor: 'pointer' }}
+            />
+          </Link>
           <Box sx={{ flexGrow: 1 }} />
-          <Button color="inherit" onClick={handleLogout}>
+          <Button
+            color="inherit"
+            onClick={handleLogout}
+            sx={{
+              bgcolor: 'transparent',
+              '&:hover': {
+                bgcolor: 'rgba(0, 0, 0, 0.15)'
+              }
+            }}
+          >
             Cerrar Sesión
           </Button>
         </Toolbar>

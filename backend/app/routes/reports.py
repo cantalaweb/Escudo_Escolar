@@ -56,13 +56,14 @@ def create_witness_report(
     Returns:
         Mensaje de confirmación con ID del reporte
     """
-    # Verificar que la clase existe
-    class_exists = db.query(Class).filter(Class.id == report.class_id).first()
-    if not class_exists:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Clase con ID {report.class_id} no encontrada"
-        )
+    # Verificar que la clase existe (si se proporcionó)
+    if report.class_id:
+        class_exists = db.query(Class).filter(Class.id == report.class_id).first()
+        if not class_exists:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Clase con ID {report.class_id} no encontrada"
+            )
 
     db_report = WitnessReport(
         class_id=report.class_id,

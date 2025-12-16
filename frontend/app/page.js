@@ -24,13 +24,38 @@ export default function Home() {
       {/* Header */}
       <AppBar position="static" elevation={1}>
         <Toolbar>
-          <img
-            src="/escudo_escolar_logo.png"
-            alt="Escudo Escolar Logo"
-            style={{ height: 40, marginRight: 16 }}
-          />
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+            <img
+              src="/escudo_escolar_logo.png"
+              alt="Escudo Escolar Logo"
+              style={{ height: 40, marginRight: 16, cursor: 'pointer' }}
+            />
+          </Link>
           <Box sx={{ flexGrow: 1 }} />
-          <Button color="inherit" component={Link} href="/login">
+          <Button
+            color="inherit"
+            component={Link}
+            href="/reportar"
+            sx={{
+              bgcolor: 'transparent',
+              '&:hover': {
+                bgcolor: 'rgba(0, 0, 0, 0.15)'
+              }
+            }}
+          >
+            Reportar Bullying
+          </Button>
+          <Button
+            color="inherit"
+            component={Link}
+            href="/acceso"
+            sx={{
+              bgcolor: 'transparent',
+              '&:hover': {
+                bgcolor: 'rgba(0, 0, 0, 0.15)'
+              }
+            }}
+          >
             Iniciar Sesión
           </Button>
         </Toolbar>
@@ -58,7 +83,7 @@ export default function Home() {
               size="large"
               color="secondary"
               component={Link}
-              href="/login"
+              href="/acceso"
             >
               Acceso Profesores
             </Button>
@@ -140,7 +165,7 @@ export default function Home() {
       <Box sx={{ bgcolor: 'grey.100', py: 8 }}>
         <Container maxWidth="md">
           <Typography variant="h4" align="center" gutterBottom>
-            ¿Eres profesor o administrador?
+            ¿Has sido testigo de Bullying?
           </Typography>
           <Typography
             variant="body1"
@@ -148,17 +173,17 @@ export default function Home() {
             color="text.secondary"
             sx={{ mb: 4 }}
           >
-            Accede al sistema para gestionar reportes y monitorear el bienestar
-            de tus estudiantes
+            Este formulario tarda solo <strong>2 segundos</strong> en completarse
+            y es completamente <strong>anónimo</strong> y confidencial
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
             <Button
               variant="contained"
               size="large"
               component={Link}
-              href="/login"
+              href="/reportar"
             >
-              Iniciar Sesión
+              Reportar Ahora
             </Button>
           </Box>
         </Container>
