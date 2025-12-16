@@ -102,7 +102,7 @@ class TeacherReport(Base):
     date = Column(Date, nullable=False, default=date.today, index=True)
 
     # Métricas Escala Likert (0-3)
-    academic_performance = Column(SmallInteger, default=0)  # log_asis
+    disengagement = Column(SmallInteger, default=0)         # diseng
     social_isolation = Column(SmallInteger, default=0)      # soc_aisl
     peer_exclusion = Column(SmallInteger, default=0)        # soc_excl
     emotional_reactivity = Column(SmallInteger, default=0)  # con_reac

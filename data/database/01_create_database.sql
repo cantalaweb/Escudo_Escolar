@@ -2,6 +2,17 @@
 -- 1. ESTRUCTURA ACADÉMICA (ESTÁTICA)
 -- =============================================================================
 
+-- Borrar tablas maestras y de datos (el orden no importa gracias a CASCADE)
+DROP TABLE IF EXISTS teacher_reports CASCADE;
+DROP TABLE IF EXISTS witness_reports CASCADE;
+DROP TABLE IF EXISTS ai_daily_predictions CASCADE;
+DROP TABLE IF EXISTS cases CASCADE;
+DROP TABLE IF EXISTS teacher_classes CASCADE;
+DROP TABLE IF EXISTS students CASCADE;
+DROP TABLE IF EXISTS teachers CASCADE;
+DROP TABLE IF EXISTS classes CASCADE;
+DROP TABLE IF EXISTS subjects CASCADE;
+
 -- Clases / Aulas (Ej: "ESO 1º A")
 CREATE TABLE classes (
     id SERIAL PRIMARY KEY,
@@ -54,7 +65,7 @@ CREATE TABLE teacher_reports (
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     
     -- Métricas Escala Likert (0-3). Usamos SMALLINT para ahorrar espacio.
-    academic_performance SMALLINT DEFAULT 0, -- log_asis
+    disengagement SMALLINT DEFAULT 0, -- diseng
     social_isolation SMALLINT DEFAULT 0,     -- soc_aisl
     peer_exclusion SMALLINT DEFAULT 0,       -- soc_excl
     emotional_reactivity SMALLINT DEFAULT 0, -- con_reac

@@ -29,7 +29,7 @@ class TeacherReportCreate(BaseModel):
     subject_id: Optional[int] = Field(None, gt=0, description="ID de la asignatura")
 
     # Métricas (Escala Likert 0-3)
-    academic_performance: int = Field(..., ge=0, le=3, description="Rendimiento académico")
+    disengagement: int = Field(..., ge=0, le=3, description="Desenganche escolar")
     social_isolation: int = Field(..., ge=0, le=3, description="Aislamiento social")
     peer_exclusion: int = Field(..., ge=0, le=3, description="Exclusión por compañeros")
     emotional_reactivity: int = Field(..., ge=0, le=3, description="Reactividad emocional")
@@ -48,7 +48,7 @@ class TeacherReportOut(BaseModel):
     student_id: int | None
     subject_id: int | None
     date: date
-    academic_performance: int
+    disengagement: int
     social_isolation: int
     peer_exclusion: int
     emotional_reactivity: int

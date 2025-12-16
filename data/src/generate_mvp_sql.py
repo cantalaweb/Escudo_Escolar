@@ -230,7 +230,7 @@ def generar_eventos():
         if fecha == pd.Timestamp(2025, 11, 12):
              reportes_profesores_data.append({
                 'teacher_id': 1, 'student_id': rebelde_1['id'], 'subject_id': 1, 'date': fecha,
-                'academic_performance': 3, 'notes': 'Falta injustificada'
+                'disengagement': 3, 'notes': 'Falta injustificada'
             })
              
         if random.random() < 0.05:
@@ -249,7 +249,7 @@ def generar_eventos():
 def calcular_predicciones():
     df_prof = pd.DataFrame(reportes_profesores_data)
     mapping_cols = {
-        'academic_performance': 'log_asis',
+        'disengagement': 'diseng',
         'social_isolation': 'soc_aisl',
         'peer_exclusion': 'soc_excl',
         'emotional_reactivity': 'con_reac',
@@ -260,7 +260,7 @@ def calcular_predicciones():
     }
     df_prof_ml = df_prof.rename(columns=mapping_cols)
     
-    columnas_requeridas = ['log_asis', 'soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'fis_mat', 'intuicion']
+    columnas_requeridas = ['diseng', 'soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'fis_mat', 'intuicion']
     for col in columnas_requeridas:
         if col not in df_prof_ml.columns: df_prof_ml[col] = 0
         df_prof_ml[col] = df_prof_ml[col].fillna(0)
@@ -275,7 +275,7 @@ def calcular_predicciones():
     else:
         testigos_agg = pd.DataFrame(columns=['fecha', 'clase_reportada', 'n_reportes_testigos'])
 
-    cols_sintomas = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'log_asis', 'fis_mat']
+    cols_sintomas = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'diseng', 'fis_mat']
     df_prof_ml['suma_puntos_dia'] = df_prof_ml[cols_sintomas].sum(axis=1)
     df_prof_ml['reporto_algo'] = (df_prof_ml['suma_puntos_dia'] > 0).astype(int)
     
@@ -284,7 +284,7 @@ def calcular_predicciones():
 
     agg_funcs = {
         'soc_aisl': 'max', 'soc_excl': 'max', 'con_reac': 'max', 'con_inhib': 'max',
-        'log_asis': 'max', 'fis_mat': 'max', 'intuicion': 'mean',
+        'diseng': 'max', 'fis_mat': 'max', 'intuicion': 'mean',
         'reporto_algo': 'sum', 'suma_puntos_dia': 'sum',
         'clase_id': 'first'
     }
@@ -294,8 +294,8 @@ def calcular_predicciones():
     df_daily = pd.merge(df_daily, testigos_agg, left_on=['fecha', 'clase_id'], right_on=['fecha', 'clase_reportada'], how='left')
     df_daily['n_reportes_testigos'] = df_daily['n_reportes_testigos'].fillna(0)
     
-    metricas_todas = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'log_asis', 'fis_mat', 'intuicion', 'n_reportes_testigos', 'n_profesores_alertados', 'intensidad_diaria_total']
-    metricas_largo_plazo = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'log_asis', 'fis_mat', 'intensidad_diaria_total']
+    metricas_todas = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'diseng', 'fis_mat', 'intuicion', 'n_reportes_testigos', 'n_profesores_alertados', 'intensidad_diaria_total']
+    metricas_largo_plazo = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'diseng', 'fis_mat', 'intensidad_diaria_total']
     
     df_final = df_daily.sort_values(['alumno_id', 'fecha']).set_index('fecha')
     
@@ -332,7 +332,7 @@ def calcular_predicciones():
         feats = feats.fillna(0)
         feats['ratio_testigos_vs_profes'] = feats['n_reportes_testigos_sum_10d'] / (feats['n_profesores_alertados_sum_10d'] + 1)
         feats['indice_sufrimiento_silencioso'] = (feats['con_inhib_mean_10d'] + feats['soc_aisl_mean_10d']) * (feats['intuicion_mean_10d'] + 0.5)
-        feats['indice_rebeldia'] = feats['log_asis_mean_30d'] - (feats['n_reportes_testigos_mean_10d'] + feats['soc_aisl_mean_30d'])
+        feats['indice_rebeldia'] = feats['diseng_mean_30d'] - (feats['n_reportes_testigos_mean_10d'] + feats['soc_aisl_mean_30d'])
         feats['aceleracion_testigos'] = feats['n_reportes_testigos_sum_3d'] - (feats['n_reportes_testigos_sum_10d'] / 3.3)
         
         for col in metricas_todas:
@@ -394,7 +394,7 @@ def main():
             cols = ['teacher_id', 'student_id', 'subject_id', 'date']
             vals = [str(r['teacher_id']), str(r['student_id']), str(r['subject_id']), f"'{r['date'].date()}'"]
             
-            metrics = ['academic_performance', 'social_isolation', 'peer_exclusion', 'emotional_reactivity', 'inhibition', 'physical_damage', 'intuition']
+            metrics = ['disengagement', 'social_isolation', 'peer_exclusion', 'emotional_reactivity', 'inhibition', 'physical_damage', 'intuition']
             for m in metrics:
                 if m in r: cols.append(m); vals.append(str(r[m]))
             

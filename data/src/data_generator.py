@@ -128,7 +128,7 @@ class GeneradorBullying:
                 })
 
     def _generar_casos_rebeldia(self):
-        # "Rebeldía/Novillos": Alumnos que faltan a clase sistemáticamente (sintoma log_asis alto)
+        # "Rebeldía/Novillos": Alumnos que faltan a clase sistemáticamente (sintoma diseng alto)
         # pero NO sufren bullying. Esto rompe la correlación Asistencia=Bullying.
         n_casos = len(self.casos_bullying) * 2
         
@@ -234,7 +234,7 @@ class GeneradorBullying:
         profes_unicos = list({p['id']: p for p in profes_asignados}.values())
 
         for profe in profes_unicos:
-            vals = {'soc_aisl':0, 'soc_excl':0, 'con_reac':0, 'con_inhib':0, 'log_asis':0, 'fis_mat':0, 'intuicion':0}
+            vals = {'soc_aisl':0, 'soc_excl':0, 'con_reac':0, 'con_inhib':0, 'diseng':0, 'fis_mat':0, 'intuicion':0}
             sensibilidad = profe['sensibilidad'] # Promedio -1.5 (Ciegos)
             
             # SÍNTOMAS
@@ -248,7 +248,7 @@ class GeneradorBullying:
                     if sensibilidad > 0: vals['intuicion'] += base * 0.3
                 else:
                     if ctx['evitacion']:
-                        vals['log_asis'] += random.gauss(2.0, 0.6) # Asistencia sí se ve
+                        vals['diseng'] += random.gauss(2.0, 0.6) # Asistencia sí se ve
                         vals['con_inhib'] += random.gauss(1.0, 0.6)
                     elif ctx['n_eventos'] > 0:
                         if profe['asignatura'] in [ASIG_EF, 'Guardia']: base *= 1.2
@@ -256,10 +256,10 @@ class GeneradorBullying:
                         vals['soc_aisl'] += base; vals['intuicion'] += base * 0.4
 
             elif ctx['tipo_bullying'] == 'Rebeldia':
-                # El rebelde falta a clase (log_asis alto)
+                # El rebelde falta a clase (diseng alto)
                 # Esto confunde al modelo: ¿Es bullying (evitación) o rebeldía?
                 # El DESEMPATE es el testigo.
-                vals['log_asis'] += random.gauss(2.5, 0.5) 
+                vals['diseng'] += random.gauss(2.5, 0.5) 
                 vals['con_reac'] += random.gauss(1.0, 0.5) # A veces contestan mal
 
             elif ctx['tipo_bullying'] == 'Puntual':

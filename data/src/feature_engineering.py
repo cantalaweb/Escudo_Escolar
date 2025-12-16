@@ -19,14 +19,14 @@ def feature_engineering():
     print("2. Procesando testigos y densidad...")
     df_testigos_agg = df_testigos.groupby(['fecha', 'clase_reportada']).size().reset_index(name='n_reportes_testigos')
 
-    cols_sintomas = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'log_asis', 'fis_mat']
+    cols_sintomas = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'diseng', 'fis_mat']
     df_prof['suma_puntos_dia'] = df_prof[cols_sintomas].sum(axis=1)
     df_prof['reporto_algo'] = (df_prof['suma_puntos_dia'] > 0).astype(int)
 
     print("3. Comprimiendo...")
     agg_funcs = {
         'soc_aisl': 'max', 'soc_excl': 'max', 'con_reac': 'max', 'con_inhib': 'max',
-        'log_asis': 'max', 'fis_mat': 'max', 'intuicion': 'mean',
+        'diseng': 'max', 'fis_mat': 'max', 'intuicion': 'mean',
         'reporto_algo': 'sum', 'suma_puntos_dia': 'sum',
         'is_bullying_active': 'max', 'colegio_id': 'first', 'clase_id': 'first'
     }
@@ -41,8 +41,8 @@ def feature_engineering():
 
     print("5. Calculando ventanas (Híbrido)...")
     
-    metricas_todas = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'log_asis', 'fis_mat', 'intuicion', 'n_reportes_testigos', 'n_profesores_alertados', 'intensidad_diaria_total']
-    metricas_largo_plazo = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'log_asis', 'fis_mat', 'intensidad_diaria_total']
+    metricas_todas = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'diseng', 'fis_mat', 'intuicion', 'n_reportes_testigos', 'n_profesores_alertados', 'intensidad_diaria_total']
+    metricas_largo_plazo = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'diseng', 'fis_mat', 'intensidad_diaria_total']
 
     def calcular_rolling(grupo_alumno):
         grupo_alumno = grupo_alumno.sort_values('fecha').set_index('fecha')
@@ -97,7 +97,7 @@ def feature_engineering():
     df_final['indice_sufrimiento_silencioso'] = (df_final['con_inhib_mean_10d'] + df_final['soc_aisl_mean_10d']) * (df_final['intuicion_mean_10d'] + 0.5)
     
     # C. Índice de Rebeldía
-    df_final['indice_rebeldia'] = df_final['log_asis_mean_30d'] - (df_final['n_reportes_testigos_mean_10d'] + df_final['soc_aisl_mean_30d'])
+    df_final['indice_rebeldia'] = df_final['diseng_mean_30d'] - (df_final['n_reportes_testigos_mean_10d'] + df_final['soc_aisl_mean_30d'])
 
     # D. Aceleración de Testigos (AHORA SÍ EXISTE LA VARIABLE DE 3D)
     df_final['aceleracion_testigos'] = df_final['n_reportes_testigos_sum_3d'] - (df_final['n_reportes_testigos_sum_10d'] / 3.3)

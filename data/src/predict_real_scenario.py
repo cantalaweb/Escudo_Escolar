@@ -68,7 +68,7 @@ class SimuladorColegioReal:
             if fecha.weekday() > 4: continue # Finde
             
             for alumno in self.alumnos:
-                sintomas = {'soc_aisl':0, 'con_inhib':0, 'log_asis':0, 'testigos':0, 'intuicion':0}
+                sintomas = {'soc_aisl':0, 'con_inhib':0, 'diseng':0, 'testigos':0, 'intuicion':0}
                 
                 if alumno['es_victima']:
                     # Bullying activo
@@ -97,7 +97,7 @@ class SimuladorColegioReal:
                         'soc_aisl': min(3, sintomas['soc_aisl']),
                         'soc_excl': 0, 'con_reac': 0,
                         'con_inhib': min(3, sintomas['con_inhib']),
-                        'log_asis': min(3, sintomas['log_asis']),
+                        'diseng': min(3, sintomas['diseng']),
                         'fis_mat': 0,
                         'intuicion': min(3, sintomas['intuicion']),
                         'is_bullying_active': 1 if alumno['es_victima'] else 0 
@@ -132,13 +132,13 @@ def procesar_datos(df_prof, df_testigos):
     testigos_agg = df_testigos.groupby(['fecha', 'alumno_asociado_simulacion']).size().reset_index(name='n_reportes_testigos')
     
     # 2. Métricas densidad
-    cols_sintomas = ['soc_aisl', 'con_inhib', 'log_asis']
+    cols_sintomas = ['soc_aisl', 'con_inhib', 'diseng']
     df_prof['suma_puntos_dia'] = df_prof[cols_sintomas].sum(axis=1)
     df_prof['reporto_algo'] = (df_prof['suma_puntos_dia'] > 0).astype(int)
     
     # 3. Compresión diaria
     df_daily = df_prof.groupby(['fecha', 'alumno_id']).agg({
-        'soc_aisl': 'max', 'con_inhib': 'max', 'log_asis': 'max', 'intuicion': 'mean',
+        'soc_aisl': 'max', 'con_inhib': 'max', 'diseng': 'max', 'intuicion': 'mean',
         'reporto_algo': 'sum', 'suma_puntos_dia': 'sum', 'is_bullying_active': 'max'
     }).reset_index()
     
@@ -152,7 +152,7 @@ def procesar_datos(df_prof, df_testigos):
     df_daily.rename(columns={'reporto_algo': 'n_profesores_alertados', 'suma_puntos_dia': 'intensidad_diaria_total'}, inplace=True)
     
     # 5. Rolling Windows & Features
-    metricas = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'log_asis', 'fis_mat', 'intuicion', 'n_reportes_testigos', 'n_profesores_alertados', 'intensidad_diaria_total']
+    metricas = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'diseng', 'fis_mat', 'intuicion', 'n_reportes_testigos', 'n_profesores_alertados', 'intensidad_diaria_total']
     
     df_final = df_daily.sort_values(['alumno_id', 'fecha']).set_index('fecha')
     results = []
@@ -173,7 +173,7 @@ def procesar_datos(df_prof, df_testigos):
                 feats = pd.concat([feats, roll_sum_3], axis=1)
             
             # Max (sintomas)
-            cols_max_src = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'log_asis', 'fis_mat']
+            cols_max_src = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'diseng', 'fis_mat']
             roll_max = group[cols_max_src].rolling(f'{v}D', min_periods=1).max().add_suffix(f'_max_{v}d')
             feats = pd.concat([feats, roll_max], axis=1)
             
@@ -183,11 +183,11 @@ def procesar_datos(df_prof, df_testigos):
         
         feats['ratio_testigos_vs_profes'] = feats['n_reportes_testigos_sum_10d'] / (feats['n_profesores_alertados_sum_10d'] + 1)
         feats['indice_sufrimiento_silencioso'] = (feats['con_inhib_mean_10d'] + feats['soc_aisl_mean_10d']) * (feats['intuicion_mean_10d'] + 0.5)
-        feats['indice_rebeldia'] = feats['log_asis_mean_30d'] - (feats['n_reportes_testigos_mean_10d'] + feats['soc_aisl_mean_30d'])
+        feats['indice_rebeldia'] = feats['diseng_mean_30d'] - (feats['n_reportes_testigos_mean_10d'] + feats['soc_aisl_mean_30d'])
         feats['aceleracion_testigos'] = feats['n_reportes_testigos_sum_3d'] - (feats['n_reportes_testigos_sum_10d'] / 3.3)
         
         # Std 30d
-        cols_std = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'log_asis', 'fis_mat', 'intensidad_diaria_total']
+        cols_std = ['soc_aisl', 'soc_excl', 'con_reac', 'con_inhib', 'diseng', 'fis_mat', 'intensidad_diaria_total']
         roll_std = group[cols_std].rolling('30D', min_periods=1).std().add_suffix('_std_30d').fillna(0)
         feats = pd.concat([feats, roll_std], axis=1)
         

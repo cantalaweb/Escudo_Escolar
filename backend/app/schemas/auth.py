@@ -11,10 +11,19 @@ class LoginRequest(BaseModel):
     password: str
 
 
+class UserResponse(BaseModel):
+    """Información del usuario en la respuesta de login"""
+    id: int
+    name: str
+    email: str
+    role: str
+
+
 class Token(BaseModel):
     """Response con el token JWT"""
     access_token: str
     token_type: str
+    user: UserResponse
 
 
 class TokenData(BaseModel):

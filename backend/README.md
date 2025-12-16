@@ -145,6 +145,26 @@ Una vez ejecutada la aplicación, puedes acceder a:
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
+## Usuarios de Prueba
+
+El proyecto incluye un script para crear usuarios de prueba con contraseñas hasheadas correctamente.
+
+### Crear/Actualizar usuarios de prueba:
+
+```bash
+uv run python create_test_users.py
+```
+
+### Usuarios disponibles:
+
+| Email | Contraseña | Admin | Nombre |
+|-------|-----------|-------|---------|
+| `diego.vazquez@escudoescolar.demo` | `password123` | No | Diego Vazquez Dominguez |
+| `maria.garcia@escudoescolar.demo` | `password123` | No | María García López |
+| `admin@escudoescolar.demo` | `admin123` | **Sí** | Admin Principal |
+| `carlos.ruiz@escudoescolar.demo` | `password123` | No | Carlos Ruiz Sánchez |
+| `ana.martinez@escudoescolar.demo` | `password123` | No | Ana Martínez Pérez |
+
 ## Autenticación
 
 La mayoría de endpoints de profesores requieren autenticación JWT:
@@ -153,6 +173,22 @@ La mayoría de endpoints de profesores requieren autenticación JWT:
 2. Copiar el `access_token` del response
 3. En Swagger UI, hacer click en "Authorize" e ingresar: `Bearer {access_token}`
 4. O en requests, agregar header: `Authorization: Bearer {access_token}`
+
+### Ejemplo de login:
+
+```bash
+curl -X POST "http://localhost:8000/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin@escudoescolar.demo", "password": "admin123"}'
+```
+
+Response:
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "bearer"
+}
+```
 
 ## Base de Datos
 

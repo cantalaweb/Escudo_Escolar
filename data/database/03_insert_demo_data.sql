@@ -683,7 +683,7 @@ INSERT INTO teacher_reports (teacher_id,student_id,subject_id,date,emotional_rea
 INSERT INTO teacher_reports (teacher_id,student_id,subject_id,date,emotional_reactivity,physical_damage,intuition,notes) VALUES (22,172,10,'2025-11-06',1,1,1,'Le han tirado la mochila al suelo.');
 INSERT INTO teacher_reports (teacher_id,student_id,subject_id,date,emotional_reactivity,physical_damage,intuition,notes) VALUES (12,172,4,'2025-11-07',2,1,2,'Empujones en el pasillo.');
 INSERT INTO teacher_reports (teacher_id,student_id,subject_id,date,emotional_reactivity,inhibition,intuition,notes) VALUES (5,172,6,'2025-11-12',1,2,1,'Murmullos constantes a su alrededor.');
-INSERT INTO teacher_reports (teacher_id,student_id,subject_id,date,academic_performance,notes) VALUES (1,242,1,'2025-11-12',3,'Falta injustificada');
+INSERT INTO teacher_reports (teacher_id,student_id,subject_id,date,disengagement,notes) VALUES (1,242,1,'2025-11-12',3,'Falta injustificada');
 INSERT INTO teacher_reports (teacher_id,student_id,subject_id,date,emotional_reactivity,inhibition,intuition,notes) VALUES (2,172,10,'2025-11-13',2,3,0,'Murmullos constantes a su alrededor.');
 INSERT INTO teacher_reports (teacher_id,student_id,subject_id,date,emotional_reactivity,inhibition,intuition,notes) VALUES (23,172,7,'2025-11-14',3,2,2,'Murmullos constantes a su alrededor.');
 INSERT INTO teacher_reports (teacher_id,student_id,subject_id,date,emotional_reactivity,inhibition,intuition,notes) VALUES (17,172,2,'2025-11-21',2,2,0,'Ha salido llorando de clase.');

@@ -57,5 +57,11 @@ def login(credentials: LoginRequest, db: Session = Depends(get_db)):
 
     return {
         "access_token": access_token,
-        "token_type": "bearer"
+        "token_type": "bearer",
+        "user": {
+            "id": teacher.id,
+            "name": teacher.name,
+            "email": teacher.email,
+            "role": "admin" if teacher.is_admin else "teacher"
+        }
     }
