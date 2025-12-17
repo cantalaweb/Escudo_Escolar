@@ -2,16 +2,17 @@
 Endpoints para reportes de alumnos y profesores
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import List
 from datetime import date, datetime
+import logging
 
 from app.database.session import get_db
 from app.models.database_models import (
     Class, Student, Teacher, TeacherClass,
-    WitnessReport, TeacherReport
+    WitnessReport, TeacherReport, Case, AIDailyPrediction
 )
 from app.schemas.common import ClassOut, MessageResponse
 from app.schemas.student import StudentOut
@@ -21,6 +22,9 @@ from app.schemas.report import (
     StudentFeaturesOut
 )
 from app.core.security import get_current_user_id
+from app.ml.predictor import predecir_bullying
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/reports", tags=["Reports"])
 
@@ -166,17 +170,73 @@ def get_students_by_class(
     return students
 
 
+def ejecutar_prediccion_ml(student_id: int, fecha_reporte: date):
+    """
+    Tarea en segundo plano que ejecuta la predicción ML y guarda/actualiza ai_daily_predictions
+
+    Args:
+        student_id: ID del estudiante
+        fecha_reporte: Fecha del reporte
+    """
+    from app.database.session import SessionLocal
+
+    db = SessionLocal()
+    try:
+        logger.info(f"Iniciando predicción ML para estudiante {student_id} en fecha {fecha_reporte}")
+
+        # 1. Ejecutar predicción
+        resultado = predecir_bullying(db, student_id, fecha_reporte)
+
+        # 2. Buscar predicción existente para este estudiante y fecha
+        prediccion_existente = (
+            db.query(AIDailyPrediction)
+            .filter(
+                AIDailyPrediction.student_id == student_id,
+                AIDailyPrediction.date == fecha_reporte
+            )
+            .first()
+        )
+
+        if prediccion_existente:
+            # Actualizar predicción existente
+            prediccion_existente.bullying_probability = resultado["bullying_probability"]
+            prediccion_existente.is_alert = resultado["is_alert"]
+            prediccion_existente.risk_factors = resultado["risk_factors"]
+            logger.info(f"Predicción actualizada para estudiante {student_id}: prob={resultado['bullying_probability']:.3f}, alert={resultado['is_alert']}")
+        else:
+            # Crear nueva predicción
+            nueva_prediccion = AIDailyPrediction(
+                student_id=student_id,
+                date=fecha_reporte,
+                bullying_probability=resultado["bullying_probability"],
+                is_alert=resultado["is_alert"],
+                risk_factors=resultado["risk_factors"]
+            )
+            db.add(nueva_prediccion)
+            logger.info(f"Nueva predicción creada para estudiante {student_id}: prob={resultado['bullying_probability']:.3f}, alert={resultado['is_alert']}")
+
+        db.commit()
+
+    except Exception as e:
+        logger.error(f"Error en predicción ML para estudiante {student_id}: {e}")
+        db.rollback()
+    finally:
+        db.close()
+
+
 @router.post("/teacher", response_model=MessageResponse)
 def create_teacher_report(
     report: TeacherReportCreate,
+    background_tasks: BackgroundTasks,
     teacher_id: int = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """
-    Crea un reporte de observación docente
+    Crea un reporte de observación docente y ejecuta predicción ML en segundo plano
 
     Args:
         report: Datos del reporte con métricas
+        background_tasks: Manejador de tareas asíncronas
         teacher_id: ID del profesor (extraído del token JWT)
         db: Sesión de base de datos
 
@@ -191,11 +251,13 @@ def create_teacher_report(
             detail=f"Estudiante con ID {report.student_id} no encontrado"
         )
 
+    fecha_reporte = report.event_date or date.today()
+
     new_report = TeacherReport(
         teacher_id=teacher_id,
         student_id=report.student_id,
         subject_id=report.subject_id,
-        date=report.event_date or date.today(),
+        date=fecha_reporte,
         disengagement=report.disengagement,
         social_isolation=report.social_isolation,
         peer_exclusion=report.peer_exclusion,
@@ -208,6 +270,29 @@ def create_teacher_report(
 
     db.add(new_report)
     db.commit()
+
+    # Verificar si existe un caso abierto para este estudiante
+    open_case = (
+        db.query(Case)
+        .filter(
+            Case.student_id == report.student_id,
+            Case.closed_at.is_(None)
+        )
+        .first()
+    )
+
+    # Si no existe un caso abierto, crear uno nuevo
+    if not open_case:
+        new_case = Case(
+            student_id=report.student_id,
+            opened_at=fecha_reporte,
+            status=None
+        )
+        db.add(new_case)
+        db.commit()
+
+    # Ejecutar predicción ML en segundo plano
+    background_tasks.add_task(ejecutar_prediccion_ml, report.student_id, fecha_reporte)
 
     return {
         "message": "Reporte de profesor guardado correctamente",

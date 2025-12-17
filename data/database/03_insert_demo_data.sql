@@ -18,31 +18,32 @@ INSERT INTO subjects (name) VALUES ('Recreo');
 INSERT INTO subjects (name) VALUES ('Comedor');
 
 -- 2. PROFESORES
-INSERT INTO teachers (name, email, password_hash) VALUES ('Diego Vazquez Dominguez', 'diego.vazquez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Angel Muñoz Alonso', 'angel.muñoz@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Lola Romero Serrano', 'lola.romero@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Sergio Hernandez Molina', 'sergio.hernandez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Gael Blanco Gutierrez', 'gael.blanco@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Paula Muñoz Dominguez', 'paula.muñoz@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Manuel Gutierrez Rodriguez', 'manuel.gutierrez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Elena Torres Sanchez', 'elena.torres@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Mario Lopez Hernandez', 'mario.lopez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Sara Hernandez Alonso', 'sara.hernandez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Julia Rodriguez Gil', 'julia.rodriguez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Gabriel Gonzalez Delgado', 'gabriel.gonzalez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Angel Vazquez Romero', 'angel.vazquez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Thiago Alvarez Garcia', 'thiago.alvarez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Angel Delgado Perez', 'angel.delgado@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Mateo Serrano Hernandez', 'mateo.serrano@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Angel Ramirez Fernandez', 'angel.ramirez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Bruno Martinez Alonso', 'bruno.martinez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Marc Torres Blanco', 'marc.torres@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Enzo Jimenez Garcia', 'enzo.jimenez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Marc Ramirez Fernandez', 'marc.ramirez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Emma Sanchez Dominguez', 'emma.sanchez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Julia Hernandez Torres', 'julia.hernandez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Alma Torres Castro', 'alma.torres@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
-INSERT INTO teachers (name, email, password_hash) VALUES ('Vega Alvarez Vazquez', 'vega.alvarez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash');
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Maripi Olet', 'maripi.olet@escudoescolar.demo', '$2b$12$7LTtQTRkdeRMRDzwi440E.PvIdUKpm9FRsSeTqXYr3VNQEqiVPSZa', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Angel Muñoz Alonso', 'angel.muñoz@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Lola Romero Serrano', 'lola.romero@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Sergio Hernandez Molina', 'sergio.hernandez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Gael Blanco Gutierrez', 'gael.blanco@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Paula Muñoz Dominguez', 'paula.muñoz@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Manuel Gutierrez Rodriguez', 'manuel.gutierrez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Elena Torres Sanchez', 'elena.torres@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Mario Lopez Hernandez', 'mario.lopez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Sara Hernandez Alonso', 'sara.hernandez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Julia Rodriguez Gil', 'julia.rodriguez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Gabriel Gonzalez Delgado', 'gabriel.gonzalez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Angel Vazquez Romero', 'angel.vazquez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Thiago Alvarez Garcia', 'thiago.alvarez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Angel Delgado Perez', 'angel.delgado@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Mateo Serrano Hernandez', 'mateo.serrano@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Angel Ramirez Fernandez', 'angel.ramirez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Bruno Martinez Alonso', 'bruno.martinez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Marc Torres Blanco', 'marc.torres@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Enzo Jimenez Garcia', 'enzo.jimenez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Marc Ramirez Fernandez', 'marc.ramirez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Emma Sanchez Dominguez', 'emma.sanchez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Julia Hernandez Torres', 'julia.hernandez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Alma Torres Castro', 'alma.torres@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Vega Alvarez Vazquez', 'vega.alvarez@escudoescolar.demo', 'pbkdf2:sha256:dummyhash', FALSE);
+INSERT INTO teachers (name, email, password_hash, is_admin) VALUES ('Gustavo de Básica', 'gustavo.debasica@escudoescolar.demo', '$2b$12$pLtlG9ovazM7g.bhecIFR.D619AjPxdGs5tWuKBn.GLAPskNRB3.q', TRUE);
 
 -- 3. CLASES Y ALUMNOS
 INSERT INTO classes (name) VALUES ('Primaria 4 A');
@@ -854,3 +855,4 @@ INSERT INTO ai_daily_predictions (student_id, date, bullying_probability, is_ale
 -- 8. CASOS
 INSERT INTO cases (student_id, opened_at, status, psychologist_notes, final_diagnosis) VALUES (172, '2025-10-15', 'CONFIRMED', 'Caso grave detectado.', 'Acoso Escolar');
 INSERT INTO cases (student_id, opened_at, status, psychologist_notes) VALUES (276, '2025-12-10', 'INVESTIGATING', 'Alertas recientes.');
+INSERT INTO cases (student_id, opened_at, status, psychologist_notes) VALUES (1, '2025-12-18', NULL, NULL);

@@ -18,7 +18,10 @@
       "Bash(uv run uvicorn:*)",
       "Bash(find:*)",
       "Bash(PGPASSWORD=ugWXc6Pq2V8s3OQbbX8llUlEfS9UrHx3 psql:*)",
-      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNiIsImV4cCI6MTc2NTg0OTE2Nn0.fTtrMBcvyislLB5dYxxS4MwjoQ_QnBPO5uEs5TOfJd0\")"
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNiIsImV4cCI6MTc2NTg0OTE2Nn0.fTtrMBcvyislLB5dYxxS4MwjoQ_QnBPO5uEs5TOfJd0\")",
+      "Bash(npm run build:*)",
+      "Bash(python -m json.tool:*)",
+      "Bash(shasum:*)"
     ]
   }
 }

@@ -162,7 +162,7 @@ export default function Home() {
       </Container>
 
       {/* CTA Section */}
-      <Box sx={{ bgcolor: 'grey.100', py: 8 }}>
+      <Box sx={{ bgcolor: 'action.hover', py: 8 }}>
         <Container maxWidth="md">
           <Typography variant="h4" align="center" gutterBottom>
             ¿Has sido testigo de Bullying?

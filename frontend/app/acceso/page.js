@@ -72,7 +72,6 @@ export default function LoginPage() {
           sx={{
             p: { xs: 3, sm: 5 },
             borderRadius: 3,
-            background: 'rgba(255, 255, 255, 0.98)',
             backdropFilter: 'blur(10px)',
           }}
         >
@@ -80,7 +79,7 @@ export default function LoginPage() {
           <Box sx={{ textAlign: 'center', mb: 4 }}>
             <Link href="/" style={{ display: 'inline-block' }}>
               <img
-                src="/escudo_escolar_logo.png"
+                src="/escudo_escolar_logo_blue.png"
                 alt="Escudo Escolar"
                 style={{ height: 80, marginBottom: 16, cursor: 'pointer' }}
               />
