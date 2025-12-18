@@ -34,9 +34,23 @@ export default function ChatPage() {
   const [sessionId, setSessionId] = useState('');
   const messagesEndRef = useRef(null);
 
-  // Generar session ID al cargar
+  // Generar o recuperar session ID desde sessionStorage
   useEffect(() => {
-    setSessionId(generateSessionId());
+    // Intentar recuperar sessionId existente
+    let existingSessionId = null;
+    if (typeof window !== 'undefined') {
+      existingSessionId = sessionStorage.getItem('chatSessionId');
+    }
+
+    // Si no existe, generar uno nuevo y guardarlo
+    if (!existingSessionId) {
+      existingSessionId = generateSessionId();
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('chatSessionId', existingSessionId);
+      }
+    }
+
+    setSessionId(existingSessionId);
 
     // Mensaje de bienvenida
     setMessages([{
