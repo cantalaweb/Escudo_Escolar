@@ -265,9 +265,8 @@ La aplicación web estará disponible en:
 
 | Email | Contraseña | Rol |
 |-------|-----------|-----|
-| `admin@escudoescolar.demo` | `admin123` | Administrador |
-| `diego.vazquez@escudoescolar.demo` | `password123` | Profesor |
-| `maria.garcia@escudoescolar.demo` | `password123` | Profesora |
+| `gustavo.debasica@escudoescolar.demo` | `password123` | Administrador |
+| `maripi.olet@escudoescolar.demo` | `password123` | Profesora |
 
 ## Estructura del Proyecto
 
@@ -383,9 +382,9 @@ SOFTWARE.
 
 Este proyecto fue desarrollado como parte del bootcamp de The Bridge School. Agradecimientos especiales a:
 
-- **Borja Barber** - Profesor del bootcamp de Data Science en The Bridge School, por su guía en el desarrollo del modelo de machine learning y análisis de datos.
+- **Borja Barber** - Profesor del bootcamp de Data Science en The Bridge School, por su guía y apoyo durante el bootcamp.
 
-- **Nicky Fariñez** - Profesor del bootcamp de Ciberseguridad en The Bridge School, por su orientación en aspectos de seguridad, autenticación y mejores prácticas de desarrollo seguro.
+- **Nicky Fariñez** - Profesor del bootcamp de Ciberseguridad en The Bridge School, por su guía y apoyo durante el bootcamp.
 
 - **The Bridge School** - Por proporcionar la formación y recursos necesarios para el desarrollo de este proyecto.
 

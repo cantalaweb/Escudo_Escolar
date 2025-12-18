@@ -206,20 +206,13 @@ ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
 
 ### Base de Datos
 
-#### Opción 1: Scripts SQL
+#### Scripts SQL
 
 ```bash
 # Ejecutar scripts de creación
 psql -U usuario -d database -f ../data/database/01_create_database.sql
 psql -U usuario -d database -f ../data/database/02_create_user.sql
 psql -U usuario -d database -f ../data/database/03_insert_demo_data.sql
-```
-
-#### Opción 2: Script Python
-
-```bash
-cd backend
-uv run python create_test_users.py
 ```
 
 ## Ejecución
@@ -472,11 +465,8 @@ curl -X GET "http://localhost:8000/dashboard/heatmap" \
 
 | Email | Contraseña | Admin | Nombre |
 |-------|-----------|-------|---------|
-| `admin@escudoescolar.demo` | `admin123` | Sí | Admin Principal |
-| `diego.vazquez@escudoescolar.demo` | `password123` | No | Diego Vazquez Dominguez |
-| `maria.garcia@escudoescolar.demo` | `password123` | No | María García López |
-| `carlos.ruiz@escudoescolar.demo` | `password123` | No | Carlos Ruiz Sánchez |
-| `ana.martinez@escudoescolar.demo` | `password123` | No | Ana Martínez Pérez |
+| `gustavo.debasica@escudoescolar.demo` | `password123` | Sí | Gustavo de Básica |
+| `maripi.olet@escudoescolar.demo` | `password123` | No | Maripi Olet |
 
 ## Desarrollo
 
