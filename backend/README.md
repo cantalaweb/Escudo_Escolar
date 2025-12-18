@@ -200,6 +200,9 @@ SECRET_KEY=tu_clave_secreta_muy_larga_y_aleatoria_para_jwt
 # OpenAI (opcional, para chatbot)
 OPENAI_API_KEY=sk-...
 
+# Machine Learning - Ruta al modelo
+MODEL_PATH=./models/bullying_detection_model.json
+
 # CORS (opcional)
 ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
 ```

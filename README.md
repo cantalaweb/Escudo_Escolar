@@ -203,6 +203,7 @@ Configurar `.env`:
 DATABASE_URL=postgresql://usuario:password@host/database
 SECRET_KEY=tu_clave_secreta_para_jwt
 OPENAI_API_KEY=tu_api_key_de_openai
+MODEL_PATH=./models/bullying_detection_model.json
 ```
 
 ### 3. Configurar Frontend

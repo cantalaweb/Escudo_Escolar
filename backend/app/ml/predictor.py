@@ -11,12 +11,13 @@ from typing import Dict, Optional
 import logging
 
 from app.ml.feature_engineering import calcular_features_estudiante
+from app.core.config import settings
 
 # Configurar logging
 logger = logging.getLogger(__name__)
 
-# Path al modelo (relativo al directorio del proyecto)
-MODEL_PATH = "/Users/source/Documents/VS_code_projects/2025-12-14_Escudo_Escolar/models/bullying_detection_model.json"
+# Path al modelo (desde variable de entorno)
+MODEL_PATH = settings.MODEL_PATH
 
 # Umbral óptimo determinado durante el entrenamiento (optimizado para F2-score)
 OPTIMAL_THRESHOLD = 0.7117

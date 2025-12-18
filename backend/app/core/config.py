@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     # OpenAI (opcional, para el chatbot)
     OPENAI_API_KEY: str | None = None
 
+    # Machine Learning - Ruta al modelo entrenado
+    MODEL_PATH: str = "./models/bullying_detection_model.json"
+
     @property
     def origins_list(self) -> List[str]:
         """Convierte la cadena de orígenes en una lista"""
