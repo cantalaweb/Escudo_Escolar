@@ -31,6 +31,7 @@
 - [Uso](#uso)
 - [Estructura del Proyecto](#estructura-del-proyecto)
 - [Flujo de Datos](#flujo-de-datos)
+- [Docker](#docker)
 - [Contribuir](#contribuir)
 - [Licencia](#licencia)
 - [Agradecimientos](#agradecimientos)
@@ -340,6 +341,65 @@ sequenceDiagram
     A->>F: Datos con alertas
     F->>P: Renderizar heatmap con alertas
 ```
+
+## Docker
+
+La aplicación está completamente dockerizada para facilitar el despliegue. Ver [DOCKER.md](DOCKER.md) para la guía completa.
+
+### Inicio Rápido con Docker
+
+```bash
+# 1. Copiar archivo de variables de entorno
+cp .env.docker .env
+
+# 2. Editar .env con tus credenciales
+nano .env
+
+# 3. Asegurarse de que el modelo ML esté en ./models/
+# 4. Levantar todos los servicios
+docker-compose up -d
+
+# 5. Ver logs
+docker-compose logs -f
+```
+
+### Servicios Incluidos
+
+- **PostgreSQL**: Base de datos (puerto 5432)
+- **Backend FastAPI**: API REST (puerto 8000)
+- **Frontend Next.js**: Aplicación web (puerto 3000)
+- **Nginx** (opcional): Reverse proxy (puerto 80)
+
+### Comandos Básicos
+
+```bash
+# Iniciar servicios
+docker-compose up -d
+
+# Ver estado
+docker-compose ps
+
+# Ver logs
+docker-compose logs -f
+
+# Detener servicios
+docker-compose down
+
+# Reconstruir después de cambios
+docker-compose build
+docker-compose up -d
+```
+
+### Acceder a la Aplicación
+
+Una vez iniciados los contenedores:
+
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+- **Swagger Docs**: http://localhost:8000/docs
+- **Con Nginx**: http://localhost
+
+Para más detalles sobre Docker, backup, troubleshooting y producción, consulta [DOCKER.md](DOCKER.md).
 
 ## Contribuir
 
