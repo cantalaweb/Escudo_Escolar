@@ -15,7 +15,7 @@ from app.models.database_models import (
     AIDailyPrediction, Class, Case
 )
 from app.core.security import get_current_user_id
-from app.schemas.case import CaseOut, CaseUpdate
+from app.schemas.case import CaseOut, CaseCreate, CaseUpdate
 from app.schemas.common import MessageResponse
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
@@ -83,6 +83,7 @@ def determine_dominant_category(categories: Dict[str, Any]) -> tuple:
 
 @router.get("/heatmap")
 def get_heatmap_data(
+    days: Optional[int] = Query(None),
     start_date: Optional[date] = Query(None),
     end_date: Optional[date] = Query(None),
     teacher_id: int = Depends(get_current_user_id),
@@ -90,6 +91,11 @@ def get_heatmap_data(
 ):
     """
     Obtiene datos para el mapa de calor
+
+    Args:
+        days: Número de días a mostrar (default: 30)
+        start_date: Fecha inicial (opcional, se calcula desde end_date - days)
+        end_date: Fecha final (opcional, default: hoy)
 
     Returns:
         Lista de estudiantes con sus reportes por día
@@ -102,11 +108,14 @@ def get_heatmap_data(
             detail="Solo administradores pueden acceder al dashboard"
         )
 
-    # Establecer rango de fechas por defecto (último mes)
+    # Establecer rango de fechas
     if not end_date:
         end_date = date.today()
+
     if not start_date:
-        start_date = end_date - timedelta(days=30)
+        # Si se proporciona 'days', usarlo; si no, usar 30 por defecto
+        num_days = days if days is not None else 30
+        start_date = end_date - timedelta(days=num_days - 1)
 
     # Query optimizada: obtener todos los reportes agrupados en una sola consulta
     reports_query = (
@@ -656,3 +665,53 @@ def update_case(
         "status": "success",
         "id": case_id
     }
+
+
+@router.post("/case", response_model=CaseOut)
+def create_case(
+    case_create: CaseCreate,
+    teacher_id: int = Depends(get_current_user_id),
+    db: Session = Depends(get_db)
+):
+    """
+    Crea un nuevo caso para un estudiante
+
+    Args:
+        case_create: Datos del nuevo caso
+        teacher_id: ID del profesor (extraído del token JWT)
+        db: Sesión de base de datos
+
+    Returns:
+        El caso creado
+    """
+    # Verificar que el usuario es admin
+    teacher = db.query(Teacher).filter(Teacher.id == teacher_id).first()
+    if not teacher or not teacher.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Solo administradores pueden crear casos"
+        )
+
+    # Verificar que el estudiante existe
+    student = db.query(Student).filter(Student.id == case_create.student_id).first()
+    if not student:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Estudiante con ID {case_create.student_id} no encontrado"
+        )
+
+    # Crear el nuevo caso
+    new_case = Case(
+        student_id=case_create.student_id,
+        opened_at=case_create.opened_at,
+        closed_at=case_create.closed_at,
+        status=case_create.status,
+        psychologist_notes=case_create.psychologist_notes,
+        final_diagnosis=case_create.final_diagnosis
+    )
+
+    db.add(new_case)
+    db.commit()
+    db.refresh(new_case)
+
+    return new_case

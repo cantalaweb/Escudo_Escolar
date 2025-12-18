@@ -48,13 +48,16 @@ def get_courses_for_student_reports(db: Session = Depends(get_db)):
 @router.post("/student", response_model=MessageResponse)
 def create_witness_report(
     report: WitnessReportCreate,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ):
     """
-    Crea un reporte de testigo anónimo
+    Crea un reporte de testigo anónimo y ejecuta predicción ML para todos los estudiantes
+    con caso abierto en la clase reportada
 
     Args:
         report: Datos del reporte (clase y fecha)
+        background_tasks: Manejador de tareas asíncronas
         db: Sesión de base de datos
 
     Returns:
@@ -69,14 +72,37 @@ def create_witness_report(
                 detail=f"Clase con ID {report.class_id} no encontrada"
             )
 
+    fecha_reporte = report.event_date or date.today()
+
     db_report = WitnessReport(
         class_id=report.class_id,
-        date=report.event_date or date.today()
+        date=fecha_reporte
     )
 
     db.add(db_report)
     db.commit()
     db.refresh(db_report)
+
+    # Obtener todos los estudiantes con caso abierto en esta clase
+    if report.class_id:
+        estudiantes_con_caso_abierto = (
+            db.query(Student)
+            .join(Case, Case.student_id == Student.id)
+            .filter(
+                Student.class_id == report.class_id,
+                Case.closed_at.is_(None)  # Solo casos abiertos
+            )
+            .all()
+        )
+
+        # Ejecutar predicción ML para cada estudiante con caso abierto
+        for estudiante in estudiantes_con_caso_abierto:
+            background_tasks.add_task(ejecutar_prediccion_ml, estudiante.id, fecha_reporte)
+
+        logger.info(
+            f"Reporte de testigo en clase {report.class_id}: "
+            f"Se evaluarán {len(estudiantes_con_caso_abierto)} estudiantes con caso abierto"
+        )
 
     return {
         "message": "Reporte de testigo registrado correctamente",

@@ -12,7 +12,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.routes import health, auth, chat, reports, coordinator, dashboard
+from app.routes import health, auth, chat, reports, coordinator, dashboard, chatbot
 from app.ml.predictor import MODEL_PATH, cargar_modelo, OPTIMAL_THRESHOLD
 from app.ml.model_integrity import MODEL_SHA256, OPTIMAL_THRESHOLD as EXPECTED_THRESHOLD
 
@@ -226,6 +226,9 @@ app.include_router(coordinator.router)
 
 # Dashboard
 app.include_router(dashboard.router)
+
+# Chatbot (multi-agent support system)
+app.include_router(chatbot.router)
 
 
 # ==============================================================================

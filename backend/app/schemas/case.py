@@ -20,6 +20,16 @@ class CaseOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class CaseCreate(BaseModel):
+    """Schema para crear un nuevo caso"""
+    student_id: int
+    opened_at: date
+    closed_at: Optional[date] = None
+    status: Optional[str] = None
+    psychologist_notes: Optional[str] = None
+    final_diagnosis: Optional[str] = None
+
+
 class CaseUpdate(BaseModel):
     """Schema para actualizar un caso"""
     status: Optional[str] = None

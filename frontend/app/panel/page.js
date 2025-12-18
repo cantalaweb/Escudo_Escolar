@@ -26,6 +26,10 @@ import {
   FormControl,
   Select,
   MenuItem,
+  IconButton,
+  InputAdornment,
+  FormControlLabel,
+  Switch,
 } from '@mui/material';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, LineChart, Line, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend, ReferenceArea } from 'recharts';
 import { useTheme } from '@mui/material/styles';
@@ -64,6 +68,7 @@ export default function DashboardPage() {
   // Modal de gestión de casos
   const [caseModalOpen, setCaseModalOpen] = useState(false);
   const [selectedCase, setSelectedCase] = useState(null);
+  const [clickedNodeDate, setClickedNodeDate] = useState(null); // Fecha del nodo clickeado
   const [caseFormData, setCaseFormData] = useState({
     status: '',
     psychologist_notes: '',
@@ -109,7 +114,7 @@ export default function DashboardPage() {
 
       // Cargar datos en paralelo para mejor rendimiento
       const [heatmapRes, riskRes] = await Promise.all([
-        fetch(`${API_URL}/dashboard/heatmap?days=30`, {
+        fetch(`${API_URL}/dashboard/heatmap?days=60`, {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
         fetch(`${API_URL}/dashboard/risk-matrix`, {
@@ -234,6 +239,7 @@ export default function DashboardPage() {
 
   const handleNodeClick = (data) => {
     if (data && data.case) {
+      setClickedNodeDate(data.date); // Guardar fecha del nodo clickeado
       setSelectedCase(data.case);
       setCaseFormData({
         status: data.case.status || '',
@@ -270,6 +276,105 @@ export default function DashboardPage() {
       }
     } catch (err) {
       console.error('Error updating case:', err);
+    }
+  };
+
+  const handleCreateCase = async (nodeDate) => {
+    if (!selectedStudent || !timelineData) {
+      console.error('Missing data:', { selectedStudent, timelineData });
+      alert('Error: Datos incompletos. Por favor, recarga la página.');
+      return;
+    }
+
+    // Confirmar con el usuario
+    if (!confirm('¿Deseas crear un nuevo caso para este día?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+
+      // 1. Encontrar todos los casos del estudiante ordenados por fecha de apertura
+      const allCasesInTimeline = timelineData.timeline
+        .map(day => day.case)
+        .filter(c => c !== null);
+
+      // Eliminar duplicados por case.id
+      const uniqueCases = Array.from(
+        new Map(allCasesInTimeline.map(c => [c.id, c])).values()
+      ).sort((a, b) => new Date(a.opened_at) - new Date(b.opened_at));
+
+      // 2. Encontrar el siguiente caso después de la fecha del nodo clickeado
+      const nextCase = uniqueCases.find(c => new Date(c.opened_at) > new Date(nodeDate));
+
+      // 3. Calcular closed_at
+      let closedAt = null;
+
+      if (nextCase) {
+        // Hay un caso posterior: encontrar el último nodo antes de que comience
+        const nodesBeforeNextCase = timelineData.timeline
+          .filter(day => {
+            const dayDate = new Date(day.date);
+            return dayDate >= new Date(nodeDate) && dayDate < new Date(nextCase.opened_at);
+          })
+          .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        if (nodesBeforeNextCase.length > 0) {
+          closedAt = nodesBeforeNextCase[0].date;
+        } else {
+          // No hay nodos entre este y el siguiente caso
+          closedAt = nodeDate;
+        }
+      }
+      // Si no hay caso posterior, closedAt se queda null (caso abierto)
+
+      const payload = {
+        student_id: timelineData.student_id,
+        opened_at: nodeDate,
+        closed_at: closedAt
+      };
+
+      console.log('Creating case with payload:', payload);
+      console.log('Timeline data:', timelineData);
+
+      // 4. Crear el caso
+      const response = await fetch(`${API_URL}/dashboard/case`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        // Recargar datos del estudiante
+        loadStudentData(selectedStudent);
+        alert('Caso creado exitosamente');
+      } else {
+        const errorData = await response.json().catch(() => ({ detail: `HTTP ${response.status}` }));
+        console.error('Error creating case:', response.status, errorData);
+
+        // Formatear el mensaje de error
+        let errorMsg = `Error ${response.status}`;
+        if (errorData.detail) {
+          if (typeof errorData.detail === 'string') {
+            errorMsg += `: ${errorData.detail}`;
+          } else if (Array.isArray(errorData.detail)) {
+            // Errores de validación de Pydantic
+            errorMsg += ':\n' + errorData.detail.map(err =>
+              `- ${err.loc?.join('.')||'campo'}: ${err.msg}`
+            ).join('\n');
+          } else {
+            errorMsg += `: ${JSON.stringify(errorData.detail)}`;
+          }
+        }
+
+        alert(`Error al crear el caso:\n${errorMsg}`);
+      }
+    } catch (err) {
+      console.error('Error creating case:', err);
+      alert(`Error al crear el caso: ${err.message || JSON.stringify(err)}`);
     }
   };
 
@@ -363,23 +468,65 @@ export default function DashboardPage() {
                         for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
                           days.push(new Date(d));
                         }
-                        return days.map((date, idx) => (
-                          <Box
-                            key={idx}
-                            sx={{
-                              width: 16,
-                              height: 16,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              fontSize: '8px',
-                              color: 'text.secondary'
-                            }}
-                            title={date.toLocaleDateString('es-ES')}
-                          >
-                            {date.getDate() === 1 || idx === 0 ? date.getDate() : ''}
-                          </Box>
-                        ));
+
+                        // Generar etiquetas de meses con separadores verticales
+                        const monthLabels = [];
+                        let currentMonth = null;
+
+                        days.forEach((date, idx) => {
+                          const month = date.getMonth();
+                          const isNewMonth = currentMonth !== null && month !== currentMonth;
+                          const isFirstDay = idx === 0;
+
+                          if (isFirstDay || isNewMonth) {
+                            currentMonth = month;
+                            const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+                                              'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                            monthLabels.push({
+                              index: idx,
+                              label: monthNames[month],
+                              isFirst: isFirstDay
+                            });
+                          } else {
+                            currentMonth = month;
+                          }
+                        });
+
+                        return days.map((date, idx) => {
+                          const monthLabel = monthLabels.find(m => m.index === idx);
+
+                          return (
+                            <Box
+                              key={idx}
+                              sx={{
+                                width: 16,
+                                height: 16,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'flex-start',
+                                fontSize: '8px',
+                                color: 'text.secondary',
+                                position: 'relative'
+                              }}
+                              title={date.toLocaleDateString('es-ES')}
+                            >
+                              {monthLabel && (
+                                <Box sx={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 0.25,
+                                  whiteSpace: 'nowrap',
+                                  position: 'absolute',
+                                  left: 0,
+                                  top: 0
+                                }}>
+                                  {!monthLabel.isFirst && <span>|</span>}
+                                  <span>{monthLabel.label}</span>
+                                </Box>
+                              )}
+                            </Box>
+                          );
+                        });
                       })()}
                     </Box>
                   </Box>
@@ -795,8 +942,7 @@ export default function DashboardPage() {
                                         if (node.case) {
                                           handleNodeClick(node);
                                         } else {
-                                          setSelectedDay(node);
-                                          setModalOpen(true);
+                                          handleCreateCase(node.date);
                                         }
                                       }}
                                     />
@@ -812,8 +958,7 @@ export default function DashboardPage() {
                                         if (node.case) {
                                           handleNodeClick(node);
                                         } else {
-                                          setSelectedDay(node);
-                                          setModalOpen(true);
+                                          handleCreateCase(node.date);
                                         }
                                       }}
                                     />
@@ -1066,17 +1211,37 @@ export default function DashboardPage() {
                   />
                 </Box>
 
-                {/* Fecha de cierre */}
+                {/* Estado del caso */}
                 <Box>
                   <Typography variant="subtitle2" gutterBottom>
-                    Cerrar Caso
+                    Estado del Caso
                   </Typography>
-                  <TextField
-                    type="date"
-                    fullWidth
-                    value={caseFormData.closed_at || ''}
-                    onChange={(e) => setCaseFormData({ ...caseFormData, closed_at: e.target.value || null })}
-                    helperText={selectedCase.closed_at ? "El caso ya está cerrado" : "Deja vacío para mantener el caso abierto"}
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={!!caseFormData.closed_at}
+                        onChange={(e) => {
+                          // Usar la fecha del nodo clickeado
+                          setCaseFormData({
+                            ...caseFormData,
+                            closed_at: e.target.checked ? clickedNodeDate : null
+                          });
+                        }}
+                        color="primary"
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography variant="body1">
+                          {caseFormData.closed_at ? 'Cerrado' : 'Abierto'}
+                        </Typography>
+                        {caseFormData.closed_at && (
+                          <Typography variant="caption" color="text.secondary">
+                            Fecha de cierre: {caseFormData.closed_at}
+                          </Typography>
+                        )}
+                      </Box>
+                    }
                   />
                 </Box>
 
