@@ -178,7 +178,7 @@ graph TB
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/escudo-escolar.git
+git clone https://github.com/cantalaweb/escudo-escolar.git
 cd escudo-escolar
 ```
 
