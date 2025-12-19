@@ -1219,12 +1219,12 @@ export default function DashboardPage() {
                   <FormControlLabel
                     control={
                       <Switch
-                        checked={!!caseFormData.closed_at}
+                        checked={!caseFormData.closed_at}
                         onChange={(e) => {
                           // Usar la fecha del nodo clickeado
                           setCaseFormData({
                             ...caseFormData,
-                            closed_at: e.target.checked ? clickedNodeDate : null
+                            closed_at: e.target.checked ? null : clickedNodeDate
                           });
                         }}
                         color="primary"
