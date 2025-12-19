@@ -29,9 +29,9 @@ dependencies = [
     "langchain-chroma>=0.1.4",
     "langgraph>=0.2.59",
     # Chatbot dependencies
-    "pynacl>=1.5.0",  # For message encryption
-    "pypdf>=5.1.0",  # For PDF document processing
-    "chromadb>=0.5.20",  # Vector database
+    "pynacl>=1.5.0", # For message encryption
+    "pypdf>=5.1.0", # For PDF document processing
+    "chromadb>=0.5.20", # Vector database
     # ML/Data Science
     "pandas>=2.2.3",
     "numpy>=2.2.1",

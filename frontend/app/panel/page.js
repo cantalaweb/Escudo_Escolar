@@ -1170,10 +1170,12 @@ export default function DashboardPage() {
                   <FormControl fullWidth>
                     <Select
                       value={caseFormData.status || ''}
-                      onChange={(e) => setCaseFormData({ ...caseFormData, status: e.target.value })}
+                      onChange={(e) => setCaseFormData({ ...caseFormData, status: e.target.value || null })}
                       displayEmpty
                     >
-                      <MenuItem value="">Sin estado</MenuItem>
+                      <MenuItem value="">
+                        <em>Seleccionar estado...</em>
+                      </MenuItem>
                       <MenuItem value="INVESTIGATING">Investigando</MenuItem>
                       <MenuItem value="CONFIRMED">Confirmado</MenuItem>
                       <MenuItem value="FALSE_ALARM">Falsa Alarma</MenuItem>

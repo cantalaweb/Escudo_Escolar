@@ -645,18 +645,12 @@ def update_case(
             detail=f"Caso con ID {case_id} no encontrado"
         )
 
-    # Actualizar campos proporcionados
-    if case_update.status is not None:
-        case.status = case_update.status
+    # Actualizar campos proporcionados (incluyendo valores None para permitir borrar campos)
+    # Usar model_dump(exclude_unset=True) para obtener solo los campos enviados
+    update_data = case_update.model_dump(exclude_unset=True)
 
-    if case_update.psychologist_notes is not None:
-        case.psychologist_notes = case_update.psychologist_notes
-
-    if case_update.final_diagnosis is not None:
-        case.final_diagnosis = case_update.final_diagnosis
-
-    if case_update.closed_at is not None:
-        case.closed_at = case_update.closed_at
+    for field, value in update_data.items():
+        setattr(case, field, value)
 
     db.commit()
 
